@@ -1,20 +1,59 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Add, Edit, Home } from "./screens";
+import Icon from "react-native-vector-icons/Ionicons";
+import { TouchableOpacity } from "react-native";
+import { COLOR } from "./styles/constants";
+import { ContextProvider } from "./context/ListsContext";
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <ContextProvider>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen
+            name="Edit"
+            component={Edit}
+            options={{
+              headerRight: () => (
+                <>
+                  <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                    <Icon
+                      name="checkmark-outline"
+                      size={25}
+                      color={COLOR.success}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Icon name="trash" size={25} color={COLOR.danger} />
+                  </TouchableOpacity>
+                </>
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="Add"
+            component={Add}
+            options={({ navigation, route }) => ({
+              headerRight: () => (
+                <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                  <Icon
+                    name="checkmark-outline"
+                    size={25}
+                    color={COLOR.success}
+                  />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+        </Stack.Navigator>
+      </ContextProvider>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
